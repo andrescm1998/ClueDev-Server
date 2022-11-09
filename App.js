@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const fetch = require('node-fetch');
+// import fetch from 'node-fetch';
 require('dotenv').config();
 
 const app = express();
@@ -12,14 +14,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/auth', (req, res) => {
-    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}`})
+    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo`})
 })
 
 app.post('/code', async (req, res) => {
-    const code = req.body
-    
+    const code = req.body.code
+    // console.log(code);
     const options = {
-        method: POST,
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'},
     }
 
