@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/auth', (req, res) => {
-    res.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}`)
+    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}`})
 })
 
 module.exports = app;
