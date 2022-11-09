@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS token;
+DROP TABLE IF EXISTS github_token;
 DROP TABLE IF EXISTS user_counter;
-DROP TABLE IF EXISTS workspace;
 DROP TABLE IF EXISTS repo;
+DROP TABLE IF EXISTS workspace;
 DROP TABLE IF EXISTS user_account;
 
 CREATE TABLE user_account (
@@ -15,6 +16,14 @@ CREATE TABLE token (
     token CHAR(40) UNIQUE NOT NULL,
     user_id INT NOT NULL,
     PRIMARY KEY (token_id),
+    FOREIGN KEY (user_id) REFERENCES user_account("user_id")
+);
+
+CREATE TABLE github_token (
+    github_token_id INT GENERATED ALWAYS AS IDENTITY,
+    github_token CHAR(40) UNIQUE NOT NULL,
+    user_id INT NOT NULL,
+    PRIMARY KEY (github_token_id),
     FOREIGN KEY (user_id) REFERENCES user_account("user_id")
 );
 
