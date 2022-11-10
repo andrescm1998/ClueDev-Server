@@ -28,12 +28,11 @@ class Counter {
     }
 
     static async create(data) {
-        const { repoName, wsId } = data;
-        const response = await db.query('INSERT INTO repo (repo_name, workspace_id) VALUES ($1, $2) RETURNING repo_id', [ repoName, wsId ]);
-
-        if (!response.rows[0].repo_id) {
-            throw 'Failed to create repo.'
-        }
+        const { userId, repoId, filename } = data;
+        const response = await db.query('INSERT INTO counter (user_id, repo_id, filename) VALUES ($1, $2, $3) RETURNING counter_id', [ userId, repoId, filename ]);
+        const id = response.rows[0].counter_id;
+        const counter = await Counter.getOneById(id);
+        return counter;
     }
 
     async destroy() {
