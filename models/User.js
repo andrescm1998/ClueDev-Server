@@ -29,7 +29,7 @@ class User {
         const { ghUsername } = data;
         const response = await db.query('INSERT INTO user_account (github_username) VALUES ($1) RETURNING user_id', [ghUsername]);
         const id = response.rows[0].user_id;
-        const user = await User.getUserById(id);
+        const user = await User.getOneById(id);
         return user;
     }
 }
