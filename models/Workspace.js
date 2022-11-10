@@ -1,10 +1,10 @@
 const db = require('../database/connect');
 
 class Workspace {
-    constructor({ wsId, wsName, userId }) {
-        this.id = wsId;
-        this.name = wsName;
-        this.creator = userId;
+    constructor({ workspace_id, workspace_name, user_id }) {
+        this.id = workspace_id;
+        this.name = workspace_name;
+        this.creator = user_id;
     }
 
     static async getOneById(id) {
@@ -37,9 +37,10 @@ class Workspace {
     static async create(data) {
         const { wsName, userId } = data;
         const response = await db.query('INSERT INTO workspace (workspace_name, user_id) VALUES ($1, $2) RETURNING workspace_id', [wsName, userId]);
-        const id = response.rows[0].workspace_id;
-        const workspace = await Workspace.getOneById(id);
-        return workspace;
+
+        if (!response.rows[0].workspace_id) {
+            throw 'Failed to create repo.'
+        }
     }
 
     async destroy() {
