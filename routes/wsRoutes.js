@@ -3,7 +3,8 @@ const { Router } = require('express');
 const wsController = require('../controllers/wsController')
 const wsRouter = Router();
 
-wsRouter.post('/create', wsController.create);
+wsRouter.post('/', wsController.create);
+wsRouter.get('/', wsController.getAllByUser);
 wsRouter.get('/:id', wsController.read);
 wsRouter.patch('/:id', wsController.update);
 wsRouter.delete('/:id', wsController.destroy);

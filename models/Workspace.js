@@ -18,6 +18,7 @@ class Workspace {
 
     static async getOneByName(name) {
         const response = await db.query('SELECT * FROM workspace WHERE workspace_name = $1', [name]);
+
         if (response.rows.length !== 1) {
             throw new Error('Unable to locate workspace.');
         } else {
@@ -27,6 +28,7 @@ class Workspace {
 
     static async getAllByUsername(ghUsername) {
         const response = await db.query('SELECT w.workspace_id, w.workspace_name, w.user_id FROM workspace AS w JOIN collaboration AS c ON w.workspace_id WHERE ghUsername = $1', [ghUsername]);
+
         if (response.rows.length !== 1) {
             throw new Error('Unable to locate workspaces.');
         } else {
@@ -38,13 +40,18 @@ class Workspace {
         const { wsName, userId } = data;
         const response = await db.query('INSERT INTO workspace (workspace_name, user_id) VALUES ($1, $2) RETURNING workspace_id', [wsName, userId]);
 
-        if (!response.rows[0].workspace_id) {
-            throw 'Failed to create repo.'
-        }
+        const id = response.rows[0].workspace_id;
+        const workspace = await Workspace.getOneById(id);
+        return workspace;
     }
 
     async destroy() {
         await db.query('DELETE FROM workspace WHERE workspace_id = $1', [this.id]);
+    }
+
+    async update(data) {
+        const { wsName, userId } = data;
+        await db.query('UPDATE workspace SET workspace_name = $1, user_id = $2 WHERE workspace_id = $3', [wsName, userId, this.id]);
     }
 }
 
