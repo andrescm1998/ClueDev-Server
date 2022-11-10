@@ -31,13 +31,13 @@ class Token {
     static async create(userId) {
         const token = uuidv4();
         const response = await db.query('INSERT INTO token (token, user_id) VALUES ($1, $2) RETURNING token_id', [ token, userId ]);
-        const id = response.rows[0].github_token_id;
+        const id = response.rows[0].token_id;
         const newToken = await Token.getOneById(id);
         return newToken;
     }
 
     async destroy() {
-        await db.query('DELETE FROM github_token WHERE github_token_id = $1', [this.id]);
+        await db.query('DELETE FROM token WHERE token_id = $1', [this.id]);
     }
 }
 
