@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS collaborations;
 DROP TABLE IF EXISTS token;
 DROP TABLE IF EXISTS github_token;
 DROP TABLE IF EXISTS user_counter;
@@ -50,5 +51,14 @@ CREATE TABLE user_counter (
     PRIMARY KEY (counter_id),
     FOREIGN KEY (user_id) REFERENCES user_account("user_id"),
     FOREIGN KEY (repo_id) REFERENCES repo("repo_id")
+);
+
+CREATE TABLE collaboration (
+    collaboration_id INT GENERATED ALWAYS AS IDENTITY,
+    github_username VARCHAR(50) UNIQUE NOT NULL,
+    workspace_id INT NOT NULL,
+    PRIMARY KEY (collaboration_id),
+    FOREIGN KEY (github_username) REFERENCES user_account ("github_username"),
+    FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id")
 );
 
