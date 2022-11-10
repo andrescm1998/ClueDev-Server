@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS collaborations;
+DROP TABLE IF EXISTS collaboration;
 DROP TABLE IF EXISTS token;
 DROP TABLE IF EXISTS github_token;
 DROP TABLE IF EXISTS user_counter;
@@ -33,7 +33,7 @@ CREATE TABLE workspace (
     workspace_name VARCHAR(50) UNIQUE NOT NULL,
     user_id INT NOT NULL,
     PRIMARY KEY (workspace_id),
-    FOREIGN KEY (user_id) REFERENCES user_account("user_id")
+    FOREIGN KEY (user_id) REFERENCES user_account("user_id") ON DELETE CASCADE
 );
 
 CREATE TABLE repo (
@@ -41,16 +41,17 @@ CREATE TABLE repo (
     repo_name VARCHAR(50) UNIQUE NOT NULL,
     workspace_id INT NOT NULL,
     PRIMARY KEY (repo_id),
-    FOREIGN KEY (workspace_id) REFERENCES workspace("workspace_id")
+    FOREIGN KEY (workspace_id) REFERENCES workspace("workspace_id") ON DELETE CASCADE
 );
 
 CREATE TABLE user_counter (
     counter_id INT GENERATED ALWAYS AS IDENTITY,
     user_id INT NOT NULL,
     repo_id INT NOT NULL,
+    filepath VARCHAR(50) NOT NULL,
     PRIMARY KEY (counter_id),
-    FOREIGN KEY (user_id) REFERENCES user_account("user_id"),
-    FOREIGN KEY (repo_id) REFERENCES repo("repo_id")
+    FOREIGN KEY (user_id) REFERENCES user_account("user_id") ON DELETE CASCADE,
+    FOREIGN KEY (repo_id) REFERENCES repo("repo_id") ON DELETE CASCADE
 );
 
 CREATE TABLE collaboration (
@@ -58,7 +59,7 @@ CREATE TABLE collaboration (
     github_username VARCHAR(50) UNIQUE NOT NULL,
     workspace_id INT NOT NULL,
     PRIMARY KEY (collaboration_id),
-    FOREIGN KEY (github_username) REFERENCES user_account ("github_username"),
-    FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id")
+    FOREIGN KEY (github_username) REFERENCES user_account ("github_username") ON DELETE CASCADE,
+    FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id") ON DELETE CASCADE
 );
 

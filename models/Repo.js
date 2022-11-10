@@ -1,10 +1,10 @@
 const db = require('../database/connect');
 
 class Repo {
-    constructor({ repoId, repoName, wsId }) {
-        this.id = repoId;
-        this.name = repoName;
-        this.wsId = wsId;
+    constructor({ repo_id, repo_name, workspace_id }) {
+        this.id = repo_id;
+        this.name = repo_name;
+        this.wsId = workspace_id;
     }
 
     static async getOneById(id) {
@@ -28,9 +28,10 @@ class Repo {
     static async create(data) {
         const { repoName, wsId } = data;
         const response = await db.query('INSERT INTO repo (repo_name, workspace_id) VALUES ($1, $2) RETURNING repo_id', [ repoName, wsId ]);
-        const id = response.rows[0].repo_id;
-        const repo = await Repo.getOneById(id);
-        return repo;
+
+        if (!response.rows[0].repo_id) {
+            throw 'Failed to create repo.'
+        }
     }
 
     async destroy() {
