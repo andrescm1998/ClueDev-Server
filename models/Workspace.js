@@ -49,9 +49,8 @@ class Workspace {
         await db.query('DELETE FROM workspace WHERE workspace_id = $1', [this.id]);
     }
 
-    async update(data) {
-        const { wsName, userId } = data;
-        await db.query('UPDATE workspace SET workspace_name = $1, user_id = $2 WHERE workspace_id = $3', [wsName, userId, this.id]);
+    async update(wsName) {
+        await db.query('UPDATE workspace SET workspace_name = $1, user_id = $2 WHERE workspace_id = $3', [wsName, this.creator, this.id]);
     }
 }
 
