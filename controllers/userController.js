@@ -6,7 +6,7 @@ const User = require('../models/User');
 const GhToken = require('../models/GhToken')
 
 const gitAuth = async (req, res) => {
-    console.log('I am here')
+    // console.log('I am here')
     res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo`});
 };
 
