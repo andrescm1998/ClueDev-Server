@@ -11,7 +11,17 @@ class GhToken {
         const response = await db.query('SELECT * FROM github_token WHERE github_token_id = $1', [id]);
 
         if (response.rows.length !== 1) {
-            throw new Error('Unable to locate counter.');
+            throw new Error('Unable to locate token.');
+        } else {
+            return new GhToken(response.rows[0]);
+        }
+    }
+
+    static async getOneByUser(userId) {
+        const response = await db.query('SELECT * FROM github_token WHERE user_id = $1', [userId]);
+
+        if (response.rows.length !== 1) {
+            throw new Error('Unable to locate token.');
         } else {
             return new GhToken(response.rows[0]);
         }
