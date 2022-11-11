@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 
 const User = require('../models/User');
 const GhToken = require('../models/GhToken')
+const Token = require('../models/Token');
 
 const gitAuth = async (req, res) => {
     // console.log('I am here')
@@ -33,18 +34,41 @@ const PATbyCode = async (req, res) => {
     const responseUser = await fetch(`https://api.github.com/user`, optionsUser);
 
     const userData = await responseUser.json();
-    const user = {ghUsername: userData.login, ghAvatar: userData.avatar_url}
 
-    const newUser = await User.create(user);
+    const checkUser = await User.getOneByUsername(userData.login)
+
+    if(!checkUser.ghUsername){
+
+        const user = {ghUsername: userData.login, ghAvatar: userData.avatar_url}
+
+        const newUser = await User.create(user);
+        
+        await GhToken.create({ghToken: ghToken, userId: newUser.id})
+        const cookieAge = 1000*60*60*24*7;
+        const token = await Token.create(newUser.id);
+        res.cookie("ClueDev", token.token, { maxAge: cookieAge, sameSite: 'None', secure: true })
+        
+        res.status(200).json(newUser)
+
+    }
+    else{
+
+        await GhToken.create({ghToken: ghToken, userId: checkUser.id})
+        const cookieAge = 1000*60*60*24*7;
+        const token = await Token.create(checkUser.id);
+        res.cookie("ClueDev", token.token, { maxAge: cookieAge, sameSite: 'None', secure: true })
+        
+        res.status(200).json(checkUser)
+    }
     
-    const newGhToken = await GhToken.create({ghToken: ghToken, userId: newUser.id})
-    
-    res.status(200).json(newUser)
     
 
     
 }
 
+const checkCookie = async (req, res) => {
+    
+}
 // User Login
 const login = async (req, res) => {
     // Fetch the access token from the GitHub API
@@ -59,7 +83,17 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-    // Logout, clear cookies and delete tokens
+    const token = await Token.getOneByToken(req.cookies.ClueDev)
+    const user = await User.getOneById(token.userId)
+    const ghToken = await GhToken.getOneByUser(user.id)
+    token.destroy();
+    ghToken.destroy()
+
+    res.clearCookie("ClueDev", {
+        sameSite: "none",
+        secure: true,
+      });
+    res.status(200).end();
 }
 
 module.exports = {
