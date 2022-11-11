@@ -26,8 +26,9 @@ class User {
     }
 
     static async create(data) {
-        const { ghUsername } = data;
-        const response = await db.query('INSERT INTO user_account (github_username) VALUES ($1) RETURNING user_id', [ghUsername]);
+        const { ghUsername, ghAvatar } = data;
+        console.log(data);
+        const response = await db.query('INSERT INTO user_account (github_username, github_avatar) VALUES ($1, $2) RETURNING user_id', [ghUsername, ghAvatar]);
         const id = response.rows[0].user_id;
         const user = await User.getOneById(id);
         return user;
