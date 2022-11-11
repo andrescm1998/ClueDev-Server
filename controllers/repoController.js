@@ -6,23 +6,25 @@ const fetch = require('node-fetch');
 const getAllByUsername = async (req, res) => {
     try {
         // Get the user
-        const userId = parseInt(req.body.userId);
+        const userId = parseInt(req.cookies.userId);
         const user = await User.getOneById(userId)
-
+        console.log(user);
         // Get this users access token
         const ghToken = await GhToken.getOneByUser(userId);
+        // console.log(ghToken);
 
         // Set the options for the fetch request
         const options = {
             headers: {
                 'Accept' : 'application/vnd.github+json',
-                'Authorization' : `Bearer ${ghToken}`
+                'Authorization' : `Bearer ${ghToken.ghToken}`
             }
         }
 
         // Fetch the users repos using the GitHub API
         const response = await fetch(`https://api.github.com/users/${user.ghUsername}/repos`, options);
         const data = await response.json();
+        console.log(data);
 
         // Return the array of repos
         res.status(200).json(data);

@@ -37,7 +37,7 @@ const PATbyCode = async (req, res) => {
 
     const checkUser = await User.getOneByUsername(userData.login)
 
-    if(!checkUser.ghUsername){
+    if(!checkUser){
 
         const user = {ghUsername: userData.login, ghAvatar: userData.avatar_url}
 
@@ -47,6 +47,7 @@ const PATbyCode = async (req, res) => {
         const cookieAge = 1000*60*60*24*7;
         const token = await Token.create(newUser.id);
         res.cookie("ClueDev", token.token, { maxAge: cookieAge, sameSite: 'None', secure: true })
+        res.cookie("userId", newUser.id, { maxAge: cookieAge, sameSite: 'None', secure: true })
         
         res.status(200).json(newUser)
 
@@ -57,6 +58,7 @@ const PATbyCode = async (req, res) => {
         const cookieAge = 1000*60*60*24*7;
         const token = await Token.create(checkUser.id);
         res.cookie("ClueDev", token.token, { maxAge: cookieAge, sameSite: 'None', secure: true })
+        res.cookie("userId", checkUser.id, { maxAge: cookieAge, sameSite: 'None', secure: true })
         
         res.status(200).json(checkUser)
     }
@@ -92,7 +94,11 @@ const logout = async (req, res) => {
     res.clearCookie("ClueDev", {
         sameSite: "none",
         secure: true,
-      });
+    });
+    res.clearCookie("userId", {
+        sameSite: "none",
+        secure: true,
+    });
     res.status(200).end();
 }
 

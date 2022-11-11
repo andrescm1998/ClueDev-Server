@@ -19,7 +19,8 @@ class User {
     static async getOneByUsername(ghUsername) {
         const response = await db.query('SELECT * FROM user_account WHERE github_username = $1', [ghUsername]);
         if (response.rows.length !== 1) {
-            throw new Error('Unable to locate user.');
+            // throw new Error('Unable to locate user.');
+            return false;
         } else {
             return new User(response.rows[0]);
         }
