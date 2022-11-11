@@ -69,7 +69,7 @@ const getContents = async (req, res) => {
         const commitSha = await commitResponse.json().commit.sha;
 
         // Fetch the repo tree using the commit SHA
-        const treeResponse = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/git/tree/${commitSha}`)
+        const treeResponse = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/git/tree/${commitSha}`, options);
         const treeData = await treeResponse.json();
 
         // Return the array of repos
