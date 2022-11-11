@@ -5,6 +5,10 @@ const cookieParser = require('cookie-parser');
 
 const logRoutes = require('./Middleware/logger');
 const userRouter = require('./routes/userRoutes')
+const wsRouter = require('./routes/wsRoutes');
+const repoRouter = require('./routes/repoRoutes');
+const counterRouter = require('./routes/counterRoutes');
+const folderRouter = require('./routes/folderRoutes');
 
 const app = express();
 
@@ -21,6 +25,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/users', userRouter);
+app.use('/workspace', wsRouter);
+app.use('/repo', repoRouter);
+app.use('/counter', counterRouter);
+app.use('/folder', folderRouter);
 
 module.exports = app;
 
