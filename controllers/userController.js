@@ -31,8 +31,16 @@ const PATbyCode = async (req, res) => {
         }
     }
     const responseUser = await fetch(`https://api.github.com/user`, optionsUser);
-    const username = await responseUser.json();
-    console.log(username.login);
+
+    const userData = await responseUser.json();
+    const user = {ghUsername: userData.login, ghAvatar: userData.avatar_url}
+
+    const newUser = await User.create(user);
+    
+    const newGhToken = await GhToken.create({ghToken: ghToken, userId: newUser.id})
+    
+    res.status(200).json(newUser)
+    
 
     
 }
