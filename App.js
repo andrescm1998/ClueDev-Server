@@ -1,33 +1,47 @@
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
-// import fetch from 'node-fetch';
-require('dotenv').config();
+const cookieParser = require('cookie-parser');
+// const github = require('./Middleware/github');
+
+const logRoutes = require('./Middleware/logger');
+const userRouter = require('./routes/userRoutes')
 
 const app = express();
 
+app.use(cors({ origin: true, credentials: true }));
+// credentials: true allows the server to send and receive cookies, origin: true is needed when credentials is set to true
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser())
+app.use(logRoutes);
+// app.use(github.setHeaders)
+
 
 app.get('/', (req, res) => {
     res.status(200).send('Welcome to the ClueDev API!')
 })
 
-app.get('/auth', (req, res) => {
-    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo`})
-})
-
-app.post('/code', async (req, res) => {
-    const code = req.body.code
-    // console.log(code);
-    const options = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json'},
-    }
-
-    const response = await fetch(`https://github.com/login/oauth/access_token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${code}`, options);
-    const data = await response.json();
-    console.log(data)
-})
+app.use('/users', userRouter);
 
 module.exports = app;
+
+
+// app.post("/sse", (req, res) => {
+//     res.writeHead(200, {
+//       Connection: "keep-alive",
+//       "Content-Type": "text/event-stream",
+//       "Cache-Control": "no-cache",
+//     });
+//     setInterval(() => {
+//         // if(counter has been moved){
+
+//             res.write(
+//                 `data: {"time": "${getTime()}"}`
+//               );
+//               res.write("\n\n");
+//         // }
+//     }, 1000);
+// });
+
+
+
+
