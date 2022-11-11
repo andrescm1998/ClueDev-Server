@@ -10,7 +10,7 @@ const getAllByUsername = async (req, res) => {
         const user = await User.getOneById(userId)
 
         // Get this users access token
-        const ghToken = GhToken.getOneByUser(userId);
+        const ghToken = await GhToken.getOneByUser(userId);
 
         // Set the options for the fetch request
         const options = {
@@ -54,7 +54,7 @@ const getContents = async (req, res) => {
         const user = await User.getOneById(userId)
 
         // Get this users access token
-        const ghToken = GhToken.getOneByUser(userId);
+        const ghToken = await GhToken.getOneByUser(userId);
 
         // Set the options for the fetch request
         const options = {
