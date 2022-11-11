@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS user_account;
 CREATE TABLE user_account (
     user_id INT GENERATED ALWAYS AS IDENTITY,
     github_username VARCHAR(50) UNIQUE NOT NULL,
+    github_avatar VARCHAR(80) UNIQUE NOT NULL,
     PRIMARY KEY (user_id)
 );
 
@@ -48,7 +49,7 @@ CREATE TABLE user_counter (
     counter_id INT GENERATED ALWAYS AS IDENTITY,
     user_id INT NOT NULL,
     repo_id INT NOT NULL,
-    filepath VARCHAR(50) NOT NULL,
+    sha VARCHAR(50) NOT NULL,
     PRIMARY KEY (counter_id),
     FOREIGN KEY (user_id) REFERENCES user_account("user_id") ON DELETE CASCADE,
     FOREIGN KEY (repo_id) REFERENCES repo("repo_id") ON DELETE CASCADE
