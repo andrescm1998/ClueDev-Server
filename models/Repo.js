@@ -25,13 +25,21 @@ class Repo {
         }
     }
 
+    static async getAllByWorkspace(wsId) {
+        const response = await db.query('SELECT * FROM repo WHERE workspace_id = $1', [wsId]);
+        if (response.rows.length !== 1) {
+            throw new Error('Unable to locate repo.');
+        } else {
+            return response.rows;
+        }
+    }
+
     static async create(data) {
         const { repoName, wsId } = data;
         const response = await db.query('INSERT INTO repo (repo_name, workspace_id) VALUES ($1, $2) RETURNING repo_id', [ repoName, wsId ]);
-
-        if (!response.rows[0].repo_id) {
-            throw 'Failed to create repo.'
-        }
+        const id = response.rows[0].repo_id;
+        const repo = await Repo.getOneById(id);
+        return repo;
     }
 
     async destroy() {
