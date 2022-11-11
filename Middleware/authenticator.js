@@ -4,7 +4,7 @@ async function authenticator(req, res, next) {
     
     try {
         console.log(req.cookies)
-        const userCookie = req.cookies.discretionUser;
+        const userCookie = req.cookies.ClueDev;
         console.log("this is at auth: ", userCookie)
 
         if (!userCookie) {
