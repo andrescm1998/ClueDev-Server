@@ -2,9 +2,10 @@ const db = require('../database/connect');
 
 class User {
 
-    constructor({ user_id, github_username }) {
+    constructor({ user_id, github_username, github_avatar }) {
         this.id = user_id;
         this.ghUsername = github_username;
+        this.ghAvatar = github_avatar;
     }
 
     static async getOneById(id) {

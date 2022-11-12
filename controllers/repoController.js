@@ -1,6 +1,8 @@
 const Repo = require('../models/Repo');
 const GhToken = require('../models/GhToken');
+const Token = require('../models/Token');
 const User = require('../models/User');
+const Collaboration = require('../models/User');
 const fetch = require('node-fetch');
 
 const getAllByUsername = async (req, res) => {
@@ -85,6 +87,36 @@ const create = async (req, res) => {
     try {
         // Create the new repo
         const repo = await Repo.create(req.body)
+        
+        // Get the user through request cookies
+        const cookie = req.cookies.ClueDev;
+        const token = await Token.getOneById(cookie);
+        const userId = token.userId;
+        const user = await User.getOneById(userId);
+
+        // Get this users access token
+        const ghToken = await GhToken.getOneByUser(userId);
+
+        // Set the options for the fetch request
+        const options = {
+            headers: {
+                'Accept' : 'application/vnd.github+json',
+                'Authorization' : `Bearer ${ghToken}`
+            }
+        }
+
+        // Get the repos contributors using user and repo data
+        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/contributors`, options);
+        const contributors = await response.json();
+
+        // Iterate through the contributors adding them as collaborators and
+        contributors.forEach( async (contributor) => {
+            const ghUsername = contributor.login;
+            const ghAvatar = contributor.avatar_url;
+            const wsId = repo.wsId;
+            const user = await User.create({ ghUsername, ghAvatar })
+            await Collaboration.create({ userId: user.id, wsId })
+        })
 
         // Get all repos in the workspace
         const repos = await Repo.getAllByWorkspace(repo.wsId)
