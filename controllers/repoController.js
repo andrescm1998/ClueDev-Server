@@ -24,7 +24,7 @@ const getAllByUsername = async (req, res) => {
         }
 
         // Fetch the users repos using the GitHub API
-        const response = await fetch(`https://api.github.com/user/repos?type=owner`, options);
+        const response = await fetch(`https://api.github.com/user/repos?type=collaborator`, options);
         const data = await response.json();
         console.log(data);
 
