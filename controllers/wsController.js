@@ -28,7 +28,7 @@ const create = async (req, res) => {
 const getAllByUsername = async (req, res) => {
     try {
         // Get the user ID to filter the workspaces
-        const userId = parseInt(req.body.userId);
+        const userId = parseInt(req.cookies.userId);
 
         // Get the GitHub username using the user ID
         const user = await User.getOneById(userId)

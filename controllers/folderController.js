@@ -5,14 +5,14 @@ const GhToken = require('../models/GhToken');
 const getContents = async (req, res) => {
     try {
         // Get the folder SHA
-        const sha = req.body.sha;
+        const sha = req.query.sha;
 
         // Get the user
-        const userId = parseInt(req.body.userId);
+        const userId = parseInt(req.cookies.userId);
         const user = await User.getOneById(userId);
 
         // Get the repo and folder info
-        const repoId = parseInt(req.body.repoId);
+        const repoId = parseInt(req.query.repoId);
         const repo = await Repo.getOneById(repoId);
 
         // Get this users access token

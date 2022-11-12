@@ -39,7 +39,7 @@ const getAllByUsername = async (req, res) => {
 const getAllByWorkspace = async (req, res) => {
     try {
         // Get the workspace ID and get all repos in this workspace
-        const wsId = parseInt(req.body.id);
+        const wsId = parseInt(req.query.wsId);
         const repos = await Repo.getAllByWorkspace(wsId);
 
         // For each repo add an array of collaborators
