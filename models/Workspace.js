@@ -26,10 +26,11 @@ class Workspace {
         }
     }
 
-    static async getAllByUsername(ghUsername) {
-        const response = await db.query('SELECT w.workspace_id, w.workspace_name, w.user_id FROM workspace AS w JOIN collaboration AS c ON w.workspace_id WHERE ghUsername = $1', [ghUsername]);
+    static async getAllByUsername(userId) {
+        const response = await db.query('SELECT w.workspace_id, w.workspace_name, w.user_id FROM workspace AS w JOIN collaboration AS c ON w.workspace_id=c.workspace_id WHERE c.user_id = $1 GROUP BY w.workspace_id', [userId]);
+        console.log(response)
 
-        if (response.rows.length !== 1) {
+        if (response.rows.length === 0) {
             throw new Error('Unable to locate workspaces.');
         } else {
             return response.rows.map(workspace => new Workspace(workspace))
