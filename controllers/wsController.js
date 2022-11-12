@@ -38,7 +38,7 @@ const getAllByUsername = async (req, res) => {
 
         // For each workspace add an array of collaborators
         workspaces.forEach( async (workspace) => {
-            const collaborators = await Collaboration.getAllByWorkspace(workspace.id);
+            const collaborators = await User.getAllByWorkspace(workspace.id);
             workspace.collaborators = collaborators;
         })
 

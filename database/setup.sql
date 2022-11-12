@@ -59,8 +59,10 @@ CREATE TABLE collaboration (
     collaboration_id INT GENERATED ALWAYS AS IDENTITY,
     user_id INT NOT NULL,
     workspace_id INT NOT NULL,
+    repo_id INT NOT NULL,
     PRIMARY KEY (collaboration_id),
     FOREIGN KEY (user_id) REFERENCES user_account ("user_id") ON DELETE CASCADE,
-    FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id") ON DELETE CASCADE
+    FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id") ON DELETE CASCADE,
+    FOREIGN KEY (repo_id) REFERENCES repo ("repo_id") ON DELETE CASCADE
 );
 

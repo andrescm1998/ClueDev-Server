@@ -41,6 +41,13 @@ const getAllByWorkspace = async (req, res) => {
         // Get the workspace ID and get all repos in this workspace
         const wsId = parseInt(req.body.id);
         const repos = await Repo.getAllByWorkspace(wsId);
+
+        // For each repo add an array of collaborators
+        repos.forEach( async (repo) => {
+            const collaborators = await User.getAllByRepo(repo.id);
+            repo.collaborators = collaborators
+        })
+
         res.status(200).json(repos);
     } catch (e) {
         res.status(400).json({ error: e })
@@ -109,13 +116,14 @@ const create = async (req, res) => {
         const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/contributors`, options);
         const contributors = await response.json();
 
-        // Iterate through the contributors adding them as collaborators and
+        // Iterate through the contributors adding them as collaborators and users
         contributors.forEach( async (contributor) => {
             const ghUsername = contributor.login;
             const ghAvatar = contributor.avatar_url;
             const wsId = repo.wsId;
+            const repoId = repo.id;
             const user = await User.create({ ghUsername, ghAvatar })
-            await Collaboration.create({ userId: user.id, wsId })
+            await Collaboration.create({ userId: user.id, wsId, repoId })
         })
 
         // Get all repos in the workspace
