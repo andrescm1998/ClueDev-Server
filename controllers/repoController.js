@@ -111,13 +111,13 @@ const create = async (req, res) => {
         }
 
         // Get the repos contributors using user and repo data
-        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/contributors`, options);
+        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/collaborators`, options);
         const contributors = await response.json();
 
         // Iterate through the contributors adding them as collaborators and users
-        contributors.forEach( async (contributor) => {
-            const ghUsername = contributor.login;
-            const ghAvatar = contributor.avatar_url;
+        contributors.forEach( async (collaborator) => {
+            const ghUsername = collaborator.login;
+            const ghAvatar = collaborator.avatar_url;
             const wsId = repo.wsId;
             const repoId = repo.id;
             const user = await User.create({ ghUsername, ghAvatar })
