@@ -57,10 +57,10 @@ CREATE TABLE user_counter (
 
 CREATE TABLE collaboration (
     collaboration_id INT GENERATED ALWAYS AS IDENTITY,
-    github_username VARCHAR(50) UNIQUE NOT NULL,
+    user_id INT NOT NULL,
     workspace_id INT NOT NULL,
     PRIMARY KEY (collaboration_id),
-    FOREIGN KEY (github_username) REFERENCES user_account ("github_username") ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES user_account ("user_id") ON DELETE CASCADE,
     FOREIGN KEY (workspace_id) REFERENCES workspace ("workspace_id") ON DELETE CASCADE
 );
 

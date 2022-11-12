@@ -36,6 +36,12 @@ const getAllByUsername = async (req, res) => {
         // Filter the workspaces based on this users collaborations
         const workspaces = await Workspace.getAllByUsername(user.ghUsername)
 
+        // For each workspace add an array of collaborators
+        workspaces.forEach( async (workspace) => {
+            const collaborators = await Collaboration.getAllByWorkspace(workspace.id);
+            workspace.collaborators = collaborators;
+        })
+
         // Return the workspaces
         res.status(200).json(workspaces)
     } catch (e) {
