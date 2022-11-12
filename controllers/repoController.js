@@ -61,7 +61,7 @@ const getContents = async (req, res) => {
         const repo = await Repo.getOneById(id);
 
         // Get the user
-        const userId = parseInt(req.body.userId); // Change to from cookie when setup
+        const userId = parseInt(req.cookie.userId); // Change to from cookie when setup
         const user = await User.getOneById(userId)
 
         // Get this users access token
@@ -96,9 +96,7 @@ const create = async (req, res) => {
         const repo = await Repo.create(req.body)
         
         // Get the user through request cookies
-        const cookie = req.cookies.ClueDev;
-        const token = await Token.getOneByToken(cookie);
-        const userId = token.userId;
+        const userId = parseInt(req.cookies.userId);
         const user = await User.getOneById(userId);
 
         // Get this users access token
