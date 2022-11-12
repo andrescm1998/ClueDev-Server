@@ -39,7 +39,7 @@ CREATE TABLE workspace (
 
 CREATE TABLE repo (
     repo_id INT GENERATED ALWAYS AS IDENTITY,
-    repo_name VARCHAR(50) UNIQUE NOT NULL,
+    repo_name VARCHAR(50) NOT NULL,
     workspace_id INT NOT NULL,
     PRIMARY KEY (repo_id),
     FOREIGN KEY (workspace_id) REFERENCES workspace("workspace_id") ON DELETE CASCADE

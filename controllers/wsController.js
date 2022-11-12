@@ -6,19 +6,22 @@ const Collaboration = require('../models/Collaboration');
 const create = async (req, res) => {
     try {
         // Create a new workspace
-        const workspace = await Workspace.create(req.body);
+        const userId = parseInt(req.cookies.userId);
+        const wsName = req.body.wsName;
+
+        const workspace = await Workspace.create({ wsName, userId });
 
         // Get the creator of the workspace
-        const user = await User.getOneById(req.body.userId);
+        const user = await User.getOneById(req.cookies.userId);
 
         // Add that user as the initial collaborator
-        await Collaboration.create({ ghUsername: user.ghUsername, wsId: workspace.id })
+        // await Collaboration.create({ ghUsername: user.ghUsername, wsId: workspace.id })
 
-        // Filter workspaces by this users collaborations
-        const workspaces = await Workspace.getAllByUsername(user.ghUsername)
+        // // Filter workspaces by this users collaborations
+        // const newWorkspace = await Workspace.getOneByName(user.ghUsername)
 
         // Return the workspaces
-        res.status(200).json(workspaces)
+        res.status(200).json(workspace)
     } catch (e) {
         res.status(400).json({ error: e })
     }
