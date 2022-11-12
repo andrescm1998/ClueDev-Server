@@ -90,7 +90,7 @@ const create = async (req, res) => {
         
         // Get the user through request cookies
         const cookie = req.cookies.ClueDev;
-        const token = await Token.getOneById(cookie);
+        const token = await Token.getOneByToken(cookie);
         const userId = token.userId;
         const user = await User.getOneById(userId);
 
