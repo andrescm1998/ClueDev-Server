@@ -2,24 +2,15 @@ const db = require('../database/connect');
 
 
 class Collaboration {
-    constructor({ collaboration_id, github_username, workspace_id }) {
-        this.id = collaboration_id;
-        this.user = github_username;
-        this.wsId = workspace_id;
-    }
+    // constructor({ collaboration_id, user_id, workspace_id }) {
+    //     this.id = collaboration_id;
+    //     this.user = user_id;
+    //     this.wsId = workspace_id;
+    // }
 
     static async create(data) {
-        const { ghUsername, wsId } = data;
-        await db.query('INSERT INTO collaboration (github_username, workspace_id) VALUES ($1, $2)', [ghUsername, wsId]);
-    }
-
-    static async getAllByWorkspace(wsId) {
-        const response = await db.query('SELECT u.github_username, u.github_avatar FROM user_account AS u JOIN collaboration AS c ON u.user_id WHERE c.workspace_id = $1', [wsId]);
-        if (response.rows.length !== 1) {
-            throw new Error('Unable to locate collaborators.');
-        } else {
-            return response.rows.map(collaboration => new Collaboration(collaboration));
-        }
+        const { userId, wsId, repoId } = data;
+        await db.query('INSERT INTO collaboration (user_id, workspace_id, repo_id) VALUES ($1, $2, $3)', [userId, wsId, repoId]);
     }
 }
 

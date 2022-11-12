@@ -24,7 +24,7 @@ const getAllByUsername = async (req, res) => {
         }
 
         // Fetch the users repos using the GitHub API
-        const response = await fetch(`https://api.github.com/users/${user.ghUsername}/repos`, options);
+        const response = await fetch(`https://api.github.com/user/repos?type=collaborator`, options);
         const data = await response.json();
         console.log(data);
 
@@ -39,8 +39,15 @@ const getAllByUsername = async (req, res) => {
 const getAllByWorkspace = async (req, res) => {
     try {
         // Get the workspace ID and get all repos in this workspace
-        const wsId = parseInt(req.body.id);
+        const wsId = parseInt(req.query.wsId);
         const repos = await Repo.getAllByWorkspace(wsId);
+
+        // For each repo add an array of collaborators
+        repos.forEach( async (repo) => {
+            const collaborators = await User.getAllByRepo(repo.id);
+            repo.collaborators = collaborators
+        })
+
         res.status(200).json(repos);
     } catch (e) {
         res.status(400).json({ error: e })
@@ -54,7 +61,7 @@ const getContents = async (req, res) => {
         const repo = await Repo.getOneById(id);
 
         // Get the user
-        const userId = parseInt(req.body.userId); // Change to from cookie when setup
+        const userId = parseInt(req.cookie.userId); // Change to from cookie when setup
         const user = await User.getOneById(userId)
 
         // Get this users access token
@@ -89,9 +96,7 @@ const create = async (req, res) => {
         const repo = await Repo.create(req.body)
         
         // Get the user through request cookies
-        const cookie = req.cookies.ClueDev;
-        const token = await Token.getOneByToken(cookie);
-        const userId = token.userId;
+        const userId = parseInt(req.cookies.userId);
         const user = await User.getOneById(userId);
 
         // Get this users access token
@@ -106,16 +111,17 @@ const create = async (req, res) => {
         }
 
         // Get the repos contributors using user and repo data
-        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/contributors`, options);
+        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/collaborators`, options);
         const contributors = await response.json();
 
-        // Iterate through the contributors adding them as collaborators and
-        contributors.forEach( async (contributor) => {
-            const ghUsername = contributor.login;
-            const ghAvatar = contributor.avatar_url;
+        // Iterate through the contributors adding them as collaborators and users
+        contributors.forEach( async (collaborator) => {
+            const ghUsername = collaborator.login;
+            const ghAvatar = collaborator.avatar_url;
             const wsId = repo.wsId;
+            const repoId = repo.id;
             const user = await User.create({ ghUsername, ghAvatar })
-            await Collaboration.create({ userId: user.id, wsId })
+            await Collaboration.create({ userId: user.id, wsId, repoId })
         })
 
         // Get all repos in the workspace
