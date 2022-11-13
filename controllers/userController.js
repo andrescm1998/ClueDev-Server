@@ -8,7 +8,7 @@ const Token = require('../models/Token');
 
 const gitAuth = async (req, res) => {
     // console.log('I am here')
-    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo`});
+    res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo,read:org`});
 };
 
 const PATbyCode = async (req, res) => {
