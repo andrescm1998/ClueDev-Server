@@ -63,26 +63,30 @@ const getContents = async (req, res) => {
         const repo = await Repo.getOneById(id);
 
         // Get the user
-        const userId = parseInt(req.cookie.userId); // Change to from cookie when setup
+        const userId = parseInt(req.cookies.userId); // Change to from cookie when setup
         const user = await User.getOneById(userId)
 
         // Get this users access token
         const ghToken = await GhToken.getOneByUser(userId);
 
+        console.log(ghToken)
+
         // Set the options for the fetch request
         const options = {
             headers: {
                 'Accept' : 'application/vnd.github+json',
-                'Authorization' : `Bearer ${ghToken}`
+                'Authorization' : `Bearer ${ghToken.ghToken}`
             }
         }
 
         // Fetch the users repo to locate the latest commit SHA
         const commitResponse = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/branches/main`, options);
-        const commitSha = await commitResponse.json().commit.sha;
+        const commitSha = (await commitResponse.json()).commit.sha
+        console.log(commitSha)
+        
 
         // Fetch the repo tree using the commit SHA
-        const treeResponse = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/git/tree/${commitSha}`, options);
+        const treeResponse = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/git/trees/${commitSha}`, options);
         const treeData = await treeResponse.json();
 
         // Return the array of repos
