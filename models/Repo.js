@@ -27,10 +27,10 @@ class Repo {
 
     static async getAllByWorkspace(wsId) {
         const response = await db.query('SELECT * FROM repo WHERE workspace_id = $1', [wsId]);
-        if (response.rows.length !== 1) {
+        if (response.rows.length === 0) {
             throw new Error('Unable to locate repo.');
         } else {
-            return response.rows;
+            return response.rows.map(repo => new Repo(repo));
         }
     }
 
