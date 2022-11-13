@@ -6,6 +6,16 @@ const User = require('../models/User');
 const GhToken = require('../models/GhToken')
 const Token = require('../models/Token');
 
+const getOneById = async (req, res) => {
+    try {
+        const id = parseInt(req.cookies.userId)
+        const user = await User.getOneById(id)
+        res.status(200).json(user)
+    } catch (e) {
+        res.status(400).json({ error: e })
+    }
+}
+
 const gitAuth = async (req, res) => {
     // console.log('I am here')
     res.json({url: `https://github.com/login/oauth/authorize?client_id=${process.env.CLIENT_ID}&scope=repo,read:org`});
@@ -103,5 +113,5 @@ const logout = async (req, res) => {
 }
 
 module.exports = {
-    PATbyCode, login, logout, gitAuth
+    PATbyCode, login, logout, gitAuth, getOneById
 }

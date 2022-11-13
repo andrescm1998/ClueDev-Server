@@ -28,7 +28,6 @@ class User {
     }
 
     static async getAllByWorkspace(wsId) {
-        console.log(wsId)
         const response = await db.query('SELECT u.user_id, u.github_username, u.github_avatar FROM user_account AS u JOIN collaboration AS c ON u.user_id = c.user_id WHERE c.workspace_id = $1', [wsId]);
         if (response.rows.length === 0) {
             throw new Error('Unable to locate collaborators.');

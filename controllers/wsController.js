@@ -32,24 +32,15 @@ const getAllByUsername = async (req, res) => {
     try {
         // Get the user ID to filter the workspaces
         const userId = parseInt(req.cookies.userId);
-
-        // Get the GitHub username using the user ID
-        const user = await User.getOneById(userId)
-
-        console.log(user)
-
+        
         // Filter the workspaces based on this users collaborations
         const workspaces = await Workspace.getAllByUsername(userId)
-
-        console.log(workspaces)
 
         // For each workspace add an array of collaborators
         for (const workspace of workspaces) {
             const collaborators = await User.getAllByWorkspace(workspace.id);
             workspace.collaborators = collaborators;
         }
-
-        console.log(workspaces)
 
         // workspaces.forEach( async (workspace) => {
         //     const collaborators = await User.getAllByWorkspace(workspace.id);
