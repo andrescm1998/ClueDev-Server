@@ -37,8 +37,8 @@ class User {
     }
 
     static async getAllByRepo(repoId) {
-        const response = await db.query('SELECT u.user_id, u.github_username, u.github_avatar FROM user_account AS u JOIN collaboration AS c ON u.user_id WHERE c.repo_id = $1', [repoId]);
-        if (response.rows.length !== 1) {
+        const response = await db.query('SELECT u.user_id, u.github_username, u.github_avatar FROM user_account AS u JOIN collaboration AS c ON u.user_id = c.user_id WHERE c.repo_id = $1', [repoId]);
+        if (response.rows.length === 0) {
             throw new Error('Unable to locate collaborators.');
         } else {
             return response.rows.map(user => new User(user));
