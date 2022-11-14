@@ -41,8 +41,10 @@ CREATE TABLE repo (
     repo_id INT GENERATED ALWAYS AS IDENTITY,
     repo_name VARCHAR(50) NOT NULL,
     workspace_id INT NOT NULL,
+    owner_id INT NOT NULL,
     PRIMARY KEY (repo_id),
-    FOREIGN KEY (workspace_id) REFERENCES workspace("workspace_id") ON DELETE CASCADE
+    FOREIGN KEY (workspace_id) REFERENCES workspace("workspace_id") ON DELETE CASCADE,
+    FOREIGN KEY (owner_id) REFERENCES user_account("user_id") ON DELETE CASCADE
 );
 
 CREATE TABLE user_counter (
