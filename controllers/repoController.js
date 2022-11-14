@@ -67,6 +67,7 @@ const getContents = async (req, res) => {
         const user = await User.getOneById(repo.ownerId)
 
         // Get this users access token
+        
         const ghToken = await GhToken.getOneByUser(user.id);
 
         console.log(ghToken)
@@ -104,7 +105,9 @@ const create = async (req, res) => {
         
         // Get the user through request cookies
         // const userId = parseInt(req.cookies.userId);
+
         const user = await User.getOneById(repo.ownerId);
+
 
         // Get this users access token
         const ghToken = await GhToken.getOneByUser(repo.ownerId);
