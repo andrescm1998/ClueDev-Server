@@ -31,7 +31,7 @@ CREATE TABLE github_token (
 
 CREATE TABLE workspace (
     workspace_id INT GENERATED ALWAYS AS IDENTITY,
-    workspace_name VARCHAR(50) UNIQUE NOT NULL,
+    workspace_name VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
     PRIMARY KEY (workspace_id),
     FOREIGN KEY (user_id) REFERENCES user_account("user_id") ON DELETE CASCADE
