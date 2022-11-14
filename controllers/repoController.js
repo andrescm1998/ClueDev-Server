@@ -63,11 +63,11 @@ const getContents = async (req, res) => {
         const repo = await Repo.getOneById(id);
 
         // Get the user
-        const userId = parseInt(req.cookies.userId); // Change to from cookie when setup
-        const user = await User.getOneById(userId)
+        // const userId = parseInt(req.cookies.userId); // Change to from cookie when setup
+        const user = await User.getOneById(repo.ownerId)
 
         // Get this users access token
-        const ghToken = await GhToken.getOneByUser(userId);
+        const ghToken = await GhToken.getOneByUser(user.userId);
 
         console.log(ghToken)
 
@@ -99,15 +99,15 @@ const getContents = async (req, res) => {
 const create = async (req, res) => {
     try {
         // Create the new repo
-        const repo = await Repo.create(req.body)
-        
+        const data = {...req.body, ownerId: parseInt(req.cookies.userId)}
+        const repo = await Repo.create(data)
         
         // Get the user through request cookies
-        const userId = parseInt(req.cookies.userId);
-        const user = await User.getOneById(userId);
+        // const userId = parseInt(req.cookies.userId);
+        // const user = await User.getOneById(repo.ownerId);
 
         // Get this users access token
-        const ghToken = await GhToken.getOneByUser(userId);
+        const ghToken = await GhToken.getOneByUser(repo.ownerId);
 
         // Set the options for the fetch request
         const options = {
