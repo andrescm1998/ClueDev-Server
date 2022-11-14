@@ -81,17 +81,19 @@ const destroy = async (req, res) => {
     try {
         // Get the ID of the workspace to delete
         const id = parseInt(req.params.id)
+        console.log(1)
 
         // Get the workspace and creator by ID and delete the workspace
         const workspace = await Workspace.getOneById(id)
-        const user = await User.getOneById(workspace.userId)
+        console.log(workspace)
+        // const user = await User.getOneById(workspace.userId)
         await workspace.delete()
-
+        console.log('hi')
         // Get all workspaces filtered by this users collaborations
-        const workspaces = await Workspace.getAllByUsername(user.ghUsername)
+        // const workspaces = await Workspace.getAllByUsername(user.ghUsername)
 
         // Return the workspaces
-        res.status(200).json(workspaces)
+        res.status(200).send("Deleted")
     } catch (e) {
         res.status(400).json({ error: e })
     }

@@ -45,7 +45,7 @@ class Workspace {
         return workspace;
     }
 
-    async destroy() {
+    async delete() {
         await db.query('DELETE FROM workspace WHERE workspace_id = $1', [this.id]);
     }
 
