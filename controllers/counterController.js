@@ -9,6 +9,7 @@ const addCounter = async (data) => {
 const getCounters = async (room) => {
     const repoId = parseInt(room)
     const counters = await Counter.getAllByRepo(repoId);
+    console.log(counters)
     return counters
 }
 
