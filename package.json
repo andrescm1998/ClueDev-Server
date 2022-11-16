@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/andrescm1998/ClueDev-Server#readme",
   "dependencies": {
+    "@slack/bolt": "^3.12.2",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
