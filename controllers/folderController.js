@@ -1,30 +1,30 @@
 const Repo = require('../models/Repo');
 const User = require('../models/User');
 const GhToken = require('../models/GhToken');
+const fetch = require('node-fetch');
 
 const getContents = async (req, res) => {
     try {
         // Get the folder SHA
-        const sha = req.query.sha;
+        const url = req.body.url
+        // const sha = req.query.sha;
+        // console.log(req.query)
+        // console.log(sha);
+        // 
 
-        console.log(sha)
+        // // Get the repo and folder info
+        // const repoId = parseInt(req.query.repoid);
+        // const repo = await Repo.getOneById(repoId);
+        
+        // console.log(repo)
+        // // console.log(typeof req.cookies.ClueDev);
+        // // Get this users access token
+        // const ghToken = await GhToken.getOneByUser(userId);
+        // // console.log('Hi');
+        // // console.log(ghToken.ghToken)
 
-        // Get the user
-        const userId = parseInt(req.cookies.userId);
-        const user = await User.getOneById(userId);
-
-        console.log(user)
-
-        // Get the repo and folder info
-        const repoId = parseInt(req.query.repoid);
-        const repo = await Repo.getOneById(repoId);
-
-        console.log(repo)
-
-        // Get this users access token
+        const userId = parseInt(req.cookies.userId)
         const ghToken = await GhToken.getOneByUser(userId);
-
-        console.log(ghToken)
 
         // Set the options for the fetch request
         const options = {
@@ -34,11 +34,15 @@ const getContents = async (req, res) => {
             }
         }
 
+        // console.log(url);
+
         // Fetch the repo tree using the commit SHA
-        const response = await fetch(`https://api.github.com/repos/${user.ghUsername}/${repo.name}/git/trees/${sha}`, options);
+        const response = await fetch(url, options);
+        // console.log('I am here')
+        // console.log(response);
         const data = await response.json();
 
-        console.log(data)
+        // console.log(data)
 
     res.status(200).json(data);
     } catch (e) {
