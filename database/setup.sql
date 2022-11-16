@@ -52,6 +52,7 @@ CREATE TABLE user_counter (
     user_id INT NOT NULL,
     repo_id INT NOT NULL,
     sha VARCHAR(50) NOT NULL,
+    counter_img VARCHAR(80) NOT NULL,
     PRIMARY KEY (counter_id),
     FOREIGN KEY (user_id) REFERENCES user_account("user_id") ON DELETE CASCADE,
     FOREIGN KEY (repo_id) REFERENCES repo("repo_id") ON DELETE CASCADE
