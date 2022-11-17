@@ -39,7 +39,7 @@ class Counter {
         // } else {
         //     return response.rows;
         // }
-        console.log(response.rows)
+        // console.log(response.rows)
         return response.rows.map(counter => new Counter(counter))
     }
 
@@ -57,7 +57,7 @@ class Counter {
 
     async checkConflicts() {
         const response = await db.query('SELECT * FROM user_counter WHERE sha = $1', [this.sha]);
-        return response.rows.length > 1;
+        return response.rows.map(counter => new Counter(counter));
     }
 }
 
