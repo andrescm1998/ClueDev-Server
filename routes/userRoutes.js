@@ -4,6 +4,8 @@ const userController = require('../controllers/userController')
 
 const userRouter = Router();
 
+// slackauth
+// userRouter.get('/slack', userController.slackAuth);
 userRouter.get('/auth', userController.gitAuth);
 userRouter.post('/code', userController.PATbyCode);
 userRouter.post('/login', userController.login);
