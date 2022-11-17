@@ -52,10 +52,13 @@ io.on('connection', (socket) => {
             io.in(room).emit('updateCounters', counters)
             if (conflicts.length > 1) {
                 io.in(room).emit('notification', conflicts)
-                const conflictData = { text: "there has been a conflict D:"}
-                console.log("conflicts", conflicts);
 
-                const request = await fetch('https://hooks.slack.com/services/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', 
+                const conflictData = { "text": "there has been a conflict D:"}
+
+                console.log("conflicts", conflicts);
+                console.log("THERE HAS BEEN A CONFLICT")
+
+                const request = await fetch('https://hooks.slack.com/services/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', 
                 {
                   method: 'POST',
                   headers: {
