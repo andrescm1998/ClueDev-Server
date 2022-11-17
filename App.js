@@ -45,9 +45,9 @@ io.on('connection', (socket) => {
             // Get all counters in the room
             const counters = await getCounters(room);
             io.in(room).emit('updateCounters', counters)
-            // if (conflicts) {
-            //     // io.in(room).emit('notification', 'You are editing the same file as USER')
-            // }
+            if (conflicts.length > 1) {
+                io.in(room).emit('notification', conflicts)
+            }
         })
 
         socket.on('deleteCounter', async (data) => {
