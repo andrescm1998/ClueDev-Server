@@ -4,7 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const { App } = require("@slack/bolt");
+const fetch = require('node-fetch');
 
 const logRoutes = require('./Middleware/logger');
 const userRouter = require('./routes/userRoutes')
@@ -45,18 +45,34 @@ io.on('connection', (socket) => {
 
             // Get all counters in the room
             const counters = await getCounters(room);
+
+      
+            
+
             io.in(room).emit('updateCounters', counters)
             if (conflicts.length > 1) {
                 io.in(room).emit('notification', conflicts)
-            }
-        })
+                const conflictData = { text: "there has been a conflict D:"}
+                console.log("conflicts", conflicts);
 
+                const request = await fetch('https://hooks.slack.com/services/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', 
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(conflictData)
+                })
+                // const response = await request.json();
+                // console.log(response)
+            }
+        });
         socket.on('deleteCounter', async (data) => {
             await deleteCounter(data)
             const counters = await getCounters(room);
             io.in(room).emit('updateCounters', counters)
-        })
-    })
+        });
+    });
 
     // socket.on('addCounter', async (data) => {
     //     // Add function to take sha and add to the counter database
@@ -76,6 +92,10 @@ io.on('connection', (socket) => {
         console.log('User disconnected')
     })
 });
+
+  
+
+///////////////// CLUEDEV API ///////////////////
 
 // credentials: true allows the server to send and receive cookies, origin: true is needed when credentials is set to true
 app.use(cors({ origin: true, credentials: true }));
