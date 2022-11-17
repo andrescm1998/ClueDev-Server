@@ -47,29 +47,25 @@ io.on('connection', (socket) => {
             // Get all counters in the room
             const counters = await getCounters(room);
 
-      
-            
-
+            // Update the counters
             io.in(room).emit('updateCounters', counters)
+
+            // Resolve conflict notifications
             if (conflicts.length > 1) {
+                // Send notifications to the client app
                 io.in(room).emit('notification', conflicts)
+
+                // Get the names of conflicted developers
                 const users = await Promise.all(conflicts.map(async (conflict) => {
-                    console.log(conflict)
                     const user = await getUsername(conflict.userId);
-                    console.log(typeof user)
                     return user;
                 }));
-
-                console.log('hi')
-                console.log(users)
                 
-
+                // Prepare notification data
                 const conflictData = { "text": `${users.join(' and ')} are working in the same file.`}
 
-                console.log("conflicts", conflicts);
-                console.log("THERE HAS BEEN A CONFLICT")
-
-                const request = await fetch('https://hooks.slack.com/services/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', 
+                // Post to slack webhook url
+                await fetch('https://hooks.slack.com/services/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', 
                 {
                   method: 'POST',
                   headers: {
@@ -77,8 +73,6 @@ io.on('connection', (socket) => {
                   },
                   body: JSON.stringify(conflictData)
                 })
-                // const response = await request.json();
-                // console.log(response)
             }
         });
         socket.on('deleteCounter', async (data) => {
