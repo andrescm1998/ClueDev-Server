@@ -14,6 +14,7 @@ const counterRouter = require('./routes/counterRoutes');
 const folderRouter = require('./routes/folderRoutes');
 
 const { addCounter, deleteCounter, getCounters } = require('./controllers/counterController');
+const { getUsername } = require('./controllers/userController');
 
 const app = express();
 const httpServer = createServer(app);
@@ -52,13 +53,23 @@ io.on('connection', (socket) => {
             io.in(room).emit('updateCounters', counters)
             if (conflicts.length > 1) {
                 io.in(room).emit('notification', conflicts)
+                const users = await Promise.all(conflicts.map(async (conflict) => {
+                    console.log(conflict)
+                    const user = await getUsername(conflict.userId);
+                    console.log(typeof user)
+                    return user;
+                }));
 
-                const conflictData = { "text": "there has been a conflict D:"}
+                console.log('hi')
+                console.log(users)
+                
+
+                const conflictData = { "text": `${users.join(' and ')} are working in the same file.`}
 
                 console.log("conflicts", conflicts);
                 console.log("THERE HAS BEEN A CONFLICT")
 
-                const request = await fetch('https://hooks.slack.com/services/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', 
+                const request = await fetch('https://hooks.slack.com/services/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', 
                 {
                   method: 'POST',
                   headers: {

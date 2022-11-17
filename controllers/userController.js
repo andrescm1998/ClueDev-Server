@@ -112,6 +112,11 @@ const logout = async (req, res) => {
     res.status(200).end();
 }
 
+const getUsername = async (id) => {
+    const user = await User.getOneById(id)
+    return user.ghUsername
+}
+
 module.exports = {
-    PATbyCode, login, logout, gitAuth, getOneById
+    PATbyCode, login, logout, gitAuth, getOneById, getUsername
 }
