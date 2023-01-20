@@ -65,7 +65,7 @@ io.on('connection', (socket) => {
                 const conflictData = { "text": `${users.join(' and ')} are working in the same file.`}
 
                 // Post to slack webhook url
-                await fetch('https://hooks.slack.com/services/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', 
+                await fetch('https://hooks.slack.com/services/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', 
                 {
                   method: 'POST',
                   headers: {
